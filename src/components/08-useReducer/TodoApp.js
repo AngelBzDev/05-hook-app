@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer } from 'react'
 import todoReducer from './todoReducer'
-import { useForm } from '../../hooks/useForm'
-import './style.css'
 import TodoList from './components/TodoList'
+import TodoAdd from './components/TodoAdd'
+import './style.css'
 
 const init = () => {
    return JSON.parse(localStorage.getItem('todos')) || []
@@ -11,28 +11,16 @@ const init = () => {
 const TodoApp = () => {
    
    const [todos, dispatch] = useReducer(todoReducer, [], init)
-   const [{desc}, handleInputChange, reset] = useForm( {desc:''} )
-
+   
    useEffect(() => {
       localStorage.setItem('todos', JSON.stringify(todos))
    }, [todos])
    
-   const handleAddTodo = (e) => {
-      e.preventDefault()      
-      if(desc.trim().length <= 1){
-         return
-      }
-      const newTodo = {
-         id: new Date().getTime(),
-         desc,
-         done: false
-      }
-      const action = {
+   const handleAddTodo = (newTodo) => { 
+      dispatch({
          type: 'add',
          payload: newTodo
-      }
-      dispatch(action)
-      reset()  
+      })
    }
 
    const handleDelete = (id) => {
@@ -69,26 +57,7 @@ const TodoApp = () => {
                </ul>
             </div>
             <div className="col-5">
-               <h4>Add</h4>
-               <form onSubmit={ handleAddTodo }>
-                  <label className="form-label">Description:</label>
-                  <input 
-                     name="desc" 
-                     type="text" 
-                     className="form-control" 
-                     placeholder="Do something" 
-                     onInput={handleInputChange}
-                     value={desc}
-                     autoComplete="off"
-                  />
-                  <div className="d-grid">
-                     <button 
-                        type="submit" 
-                        className="btn btn-success btn-block mt-3">
-                           Add
-                     </button>
-                  </div>
-               </form>
+               <TodoAdd handleAddTodo={handleAddTodo}/>
             </div>
          </div>
       </div>
