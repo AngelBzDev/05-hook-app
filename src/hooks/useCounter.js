@@ -17,5 +17,4 @@ export const useCounter = (initialState = 1, limit = 50) => {
    return {
       counter, increment, decrement, reset
    }
-
 }
